@@ -1,0 +1,119 @@
+:root {
+  --oxford-blue: #080c24ff;
+  --blue-crayola: #3071e8ff;
+  --white: #ffffffff;
+
+  /* Set neon color */
+  --neon-x-color: #f40;
+  --neon-o-color: #08f;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  background-color: var(--oxford-blue);
+  font-size: 1.6rem;
+  font-family: cursive;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board {
+  background-color: var(--blue-crayola);
+  width: 290px;
+  height: 290px;
+  display: grid;
+  grid-template-columns: repeat(3, 90px);
+  grid-template-rows: repeat(3, 90px);
+  gap: 10px;
+}
+
+.board-cell {
+  background-color: var(--oxford-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.board-cell.active {
+  color: var(--white);
+  font-size: 90px;
+}
+
+.board-cell.X::before {
+  content: "X";
+  text-shadow: -0.2rem -0.2rem 1rem #fff, 0.2rem 0.2rem 1rem #fff,
+    0 0 2rem var(--neon-x-color), 0 0 4rem var(--neon-x-color),
+    0 0 6rem var(--neon-x-color), 0 0 8rem var(--neon-x-color),
+    0 0 10rem var(--neon-x-color);
+}
+
+.board-cell.O::before {
+  content: "O";
+  text-shadow: -0.2rem -0.2rem 1rem #fff, 0.2rem 0.2rem 1rem #fff,
+    0 0 2rem var(--neon-o-color), 0 0 4rem var(--neon-o-color),
+    0 0 6rem var(--neon-o-color), 0 0 8rem var(--neon-o-color),
+    0 0 10rem var(--neon-o-color);
+}
+
+
+/* The snackbar - position it at the bottom and in the middle of the screen */
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 250px; /* Set a default minimum width */
+  margin-left: -125px; /* Divide value of min-width by 2 */
+  background-color: var(--blue-crayola); /* Black background color */
+  color: var(--white); /* White text color */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 10px 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 30px; /* 30px from the bottom */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+.show {
+  visibility: visible !important; /* Show the snackbar */
+
+/* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
