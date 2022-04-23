@@ -7,6 +7,8 @@
   --board-size: 280px;
   --line-size: 5px;
   --cell-size: 90px; /* (board-size - 2*(line-size))/3 */
+  --cell-hide-animation: cell-hide 0.1s ease-out;
+  --cell-show-animation: cell-show 0.1s ease-in;
 }
 
 * {
@@ -22,7 +24,7 @@ html {
 body {
   background-color: var(--oxford-blue);
   font-size: 1.6rem;
-  font-family: cursive;
+  font-family: cursive, "Courier New", Courier, monospace;
 }
 
 .container {
@@ -100,27 +102,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-}
-
-.board-cell.active {
-  color: var(--white);
-  font-size: 75px;
-  z-index: 10;
-  opacity: 1;
 }
 
 .board-cell.O::before,
 .board-cell.X::before {
-  opacity: 0;
-  transform: scale(0);
-  transition: all 0.1s ease-in-out;
-}
-
-.board-cell.O.active::before,
-.board-cell.X.active::before {
-  opacity: 1;
-  transform: scale(1);
+  color: var(--white);
+  font-size: 75px;
+  z-index: 10;
 }
 
 .board-cell.X::before {
@@ -191,5 +179,27 @@ body {
   to {
     bottom: 0;
     opacity: 0;
+  }
+}
+
+@keyframes cell-show {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes cell-hide {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0);
   }
 }

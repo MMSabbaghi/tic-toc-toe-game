@@ -35,8 +35,8 @@ function isEmptyCell(target) {
 }
 
 function fillCell(target) {
-  target.classList.add(player);
-  setTimeout(() => target.classList.add("active"), 100);
+  target.classList.add("active", player);
+  target.style.animation = "var(--cell-show-animation)";
   const { row, col } = target.dataset;
   gameBoard[row][col] = player;
 }
@@ -86,8 +86,9 @@ function checkTie() {
 
 function restartGame() {
   allCells.forEach((cell) => {
-    cell.classList.remove("active", X_PLAYER, O_PLAYER);
-    setTimeout(() => cell.classList.remove(X_PLAYER, O_PLAYER), 200);
+    cell.classList.remove("active");
+    cell.style.animation = "var(--cell-hide-animation)";
+    setTimeout(() => cell.classList.remove(X_PLAYER, O_PLAYER), 90);
   });
   gameBoard = getInitialBoard();
   win = false;
@@ -95,9 +96,11 @@ function restartGame() {
 }
 
 function notify(msg) {
-  snackbar.innerHTML = msg;
-  setTimeout(snackbar.classList.add("show"), 800);
-  setTimeout(() => snackbar.classList.remove("show"), 2900);
+  setTimeout(() => {
+    snackbar.innerHTML = msg;
+    snackbar.classList.add("show");
+    setTimeout(() => snackbar.classList.remove("show"), 2900);
+  }, 200);
 }
 
 function updateScore() {
@@ -123,11 +126,12 @@ function renderGameStatus() {
 }
 
 function playSoundByStatus() {
-  const play = (src) => new Audio(src).play();
-  if (win) play("./sounds/game-over.mp3");
-  else if (tie) play("./sounds/game-over-tie.mp3");
-  else if (player === X_PLAYER) play("./sounds/note-high.mp3");
-  else play("./sounds/note-low.mp3");
+  let soundSrc = "";
+  if (win) soundSrc = "./sounds/game-over.mp3";
+  else if (tie) soundSrc = "./sounds/game-over-tie.mp3";
+  else if (player === X_PLAYER) soundSrc = "./sounds/note-high.mp3";
+  else soundSrc = "./sounds/note-low.mp3";
+  setTimeout(() => new Audio(soundSrc).play(), 70);
 }
 
 function handleCellClick({ target }) {
