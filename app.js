@@ -2,23 +2,30 @@
 const allCells = document.querySelectorAll(".board-cell");
 const board = document.querySelector(".board");
 const snackbar = document.getElementById("snackbar");
+const xScore = document.getElementById("x-score");
+const oScore = document.getElementById("o-score");
+const tieScore = document.getElementById("tie-score");
 
 //* constants
 const X_PLAYER = "X";
 const O_PLAYER = "O";
-const INITIAL_BOARD = [
-  [0, 0, 0],
-  [0, 0, 0],
-  [0, 0, 0],
-];
 
 //* states
 let player = X_PLAYER;
-let gameBoard = INITIAL_BOARD;
-let completed = false;
+let gameBoard = getInitialBoard();
 let win = false;
+let tie = false;
+let score = {
+  [X_PLAYER]: 0,
+  [O_PLAYER]: 0,
+  tie: 0,
+};
 
 //* functions
+function getInitialBoard() {
+  return [[], [], []].map((row) => [0, 0, 0]);
+}
+
 function togglePlayer() {
   player = player === X_PLAYER ? O_PLAYER : X_PLAYER;
 }
@@ -28,7 +35,8 @@ function isEmptyCell(target) {
 }
 
 function fillCell(target) {
-  target.classList.add("active", player);
+  target.classList.add(player);
+  setTimeout(() => target.classList.add("active"), 100);
   const { row, col } = target.dataset;
   gameBoard[row][col] = player;
 }
@@ -39,23 +47,25 @@ function isSamePlayer(arr) {
   );
 }
 
-const getColumns = () => {
-  const columns = [[], [], []];
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      columns[i][j] = gameBoard[j][i];
-    }
-  }
-  return columns;
-};
-
-const getDiameters = () => {
-  const d1 = [gameBoard[0][0], gameBoard[1][1], gameBoard[2][2]];
-  const d2 = [gameBoard[0][2], gameBoard[1][1], gameBoard[2][0]];
-  return [d1, d2];
-};
-
 function checkWin() {
+  // get board columns
+  const getColumns = () => {
+    const columns = [[], [], []];
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        columns[i][j] = gameBoard[j][i];
+      }
+    }
+    return columns;
+  };
+
+  // get board diameters
+  const getDiameters = () => {
+    const d1 = [gameBoard[0][0], gameBoard[1][1], gameBoard[2][2]];
+    const d2 = [gameBoard[0][2], gameBoard[1][1], gameBoard[2][0]];
+    return [d1, d2];
+  };
+
   // board directions
   const columns = getColumns();
   const diameters = getDiameters();
@@ -70,36 +80,64 @@ function checkWin() {
   });
 }
 
-function checkCompleted() {
-  completed = gameBoard.flat().every((val) => val !== 0);
+function checkTie() {
+  tie = !win && gameBoard.flat().every((val) => val !== 0);
 }
 
-function resetGame() {
-  allCells.forEach((cell) => (cell.className = "board-cell"));
-  gameBoard = gameBoard.map((row) => [0, 0, 0]);
+function restartGame() {
+  allCells.forEach((cell) => {
+    cell.classList.remove("active", X_PLAYER, O_PLAYER);
+    setTimeout(() => cell.classList.remove(X_PLAYER, O_PLAYER), 200);
+  });
+  gameBoard = getInitialBoard();
+  win = false;
+  tie = false;
 }
 
 function notify(msg) {
   snackbar.innerHTML = msg;
-  snackbar.classList.add("show");
-  // After 3 seconds, remove the show class from DIV
-  setTimeout(() => snackbar.classList.remove("show"), 3000);
+  setTimeout(snackbar.classList.add("show"), 800);
+  setTimeout(() => snackbar.classList.remove("show"), 2900);
+}
+
+function updateScore() {
+  const renderScore = () => {
+    xScore.innerText = score[X_PLAYER];
+    oScore.innerText = score[O_PLAYER];
+    tieScore.innerText = score.tie;
+  };
+
+  if (win) {
+    score[player] += 1;
+    renderScore();
+  } else if (tie) {
+    score.tie += 1;
+    renderScore();
+  }
 }
 
 function renderGameStatus() {
-  const equal = !win && completed;
-  // check status
   if (win) notify(`${player} win !`);
-  else if (equal) notify("equal game !");
-  if (win || equal) setTimeout(resetGame, 3000);
+  else if (tie) notify("tie game !");
+  if (win || tie) setTimeout(restartGame, 3500);
+}
+
+function playSoundByStatus() {
+  const play = (src) => new Audio(src).play();
+  if (win) play("./sounds/game-over.mp3");
+  else if (tie) play("./sounds/game-over-tie.mp3");
+  else if (player === X_PLAYER) play("./sounds/note-high.mp3");
+  else play("./sounds/note-low.mp3");
 }
 
 function handleCellClick({ target }) {
-  if (isEmptyCell(target) && !win && !completed) {
+  if (isEmptyCell(target) && !win && !tie) {
     fillCell(target);
-    checkCompleted();
     checkWin();
+    checkTie();
+    playSoundByStatus();
     renderGameStatus();
+    updateScore();
     togglePlayer();
   }
 }

@@ -1,11 +1,12 @@
 :root {
-  --oxford-blue: #080c24ff;
+  --oxford-blue: rgb(5, 8, 31);
   --blue-crayola: #3071e8ff;
   --white: #ffffffff;
-
-  /* Set neon color */
   --neon-x-color: #f40;
   --neon-o-color: #08f;
+  --board-size: 280px;
+  --line-size: 5px;
+  --cell-size: 90px; /* (board-size - 2*(line-size))/3 */
 }
 
 * {
@@ -30,28 +31,96 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+}
+
+.result {
+  min-width: 300px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 20px;
+}
+
+.score {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  flex-direction: column;
+  padding: 5px 8px;
+  font-size: 1.2rem;
+  color: var(--white);
+}
+
+.score span:last-of-type {
+  opacity: 0.8;
 }
 
 .board {
-  background-color: var(--blue-crayola);
-  width: 290px;
-  height: 290px;
+  width: var(--board-size);
+  height: var(--board-size);
   display: grid;
-  grid-template-columns: repeat(3, 90px);
-  grid-template-rows: repeat(3, 90px);
-  gap: 10px;
+  grid-template-columns: repeat(3, var(--cell-size));
+  grid-template-rows: repeat(3, var(--cell-size));
+  gap: var(--line-size);
+  position: relative;
+}
+
+.line {
+  position: absolute;
+  background-color: var(--blue-crayola);
+  border-radius: 5px;
+  animation: line-show 0.8s;
+  animation-delay: 0.2s;
+}
+
+.vr-line {
+  width: var(--line-size);
+  height: var(--board-size);
+  left: var(--cell-size);
+}
+
+.hr-line {
+  width: var(--board-size);
+  height: var(--line-size);
+  top: var(--cell-size);
+}
+
+.hr-2 {
+  top: calc(2 * var(--cell-size));
+}
+
+.vr-2 {
+  left: calc(2 * var(--cell-size));
 }
 
 .board-cell {
-  background-color: var(--oxford-blue);
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .board-cell.active {
   color: var(--white);
-  font-size: 90px;
+  font-size: 75px;
+  z-index: 10;
+  opacity: 1;
+}
+
+.board-cell.O::before,
+.board-cell.X::before {
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.1s ease-in-out;
+}
+
+.board-cell.O.active::before,
+.board-cell.X.active::before {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .board-cell.X::before {
@@ -70,50 +139,57 @@ body {
     0 0 10rem var(--neon-o-color);
 }
 
-
-/* The snackbar - position it at the bottom and in the middle of the screen */
 #snackbar {
-  visibility: hidden; /* Hidden by default. Visible on click */
-  min-width: 250px; /* Set a default minimum width */
-  margin-left: -125px; /* Divide value of min-width by 2 */
-  background-color: var(--blue-crayola); /* Black background color */
-  color: var(--white); /* White text color */
-  text-align: center; /* Centered text */
-  border-radius: 2px; /* Rounded borders */
-  padding: 10px 16px; /* Padding */
-  position: fixed; /* Sit on top of the screen */
-  z-index: 1; /* Add a z-index if needed */
-  left: 50%; /* Center the snackbar */
-  bottom: 30px; /* 30px from the bottom */
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: var(--blue-crayola);
+  color: var(--white);
+  text-align: center;
+  border-radius: 2px;
+  padding: 10px 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
 }
 
-/* Show the snackbar when clicking on a button (class added with JavaScript) */
-.show {
-  visibility: visible !important; /* Show the snackbar */
-
-/* Add animation: Take 0.5 seconds to fade in and out the snackbar.
-However, delay the fade out process for 2.5 seconds */
+#snackbar.show {
+  visibility: visible !important;
   -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
   animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
 
-/* Animations to fade the snackbar in and out */
-@-webkit-keyframes fadein {
-  from {bottom: 0; opacity: 0;}
-  to {bottom: 30px; opacity: 1;}
+/** animation **/
+@keyframes line-show {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes fadein {
-  from {bottom: 0; opacity: 0;}
-  to {bottom: 30px; opacity: 1;}
-}
-
-@-webkit-keyframes fadeout {
-  from {bottom: 30px; opacity: 1;}
-  to {bottom: 0; opacity: 0;}
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
+  }
 }
 
 @keyframes fadeout {
-  from {bottom: 30px; opacity: 1;}
-  to {bottom: 0; opacity: 0;}
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
 }
