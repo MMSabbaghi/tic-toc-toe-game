@@ -7,8 +7,8 @@
   --board-size: 280px;
   --line-size: 5px;
   --cell-size: 90px; /* (board-size - 2*(line-size))/3 */
-  --cell-hide-animation: cell-hide 0.1s ease-out;
-  --cell-show-animation: cell-show 0.1s ease-in;
+  --cell-hide-animation: cell-hide 0.1s;
+  --cell-show-animation: cell-show 0.1s;
 }
 
 * {
