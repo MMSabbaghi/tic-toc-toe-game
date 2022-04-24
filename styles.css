@@ -106,6 +106,7 @@ body {
 
 .win-row::before {
   animation-name: show-row-line;
+  width: var(--board-size);
 }
 
 @keyframes show-row-line {
