@@ -13,7 +13,7 @@ const O_PLAYER = "O";
 //* states
 let player = X_PLAYER;
 let gameBoard = getInitialBoard();
-let win = false;
+let win = null;
 let tie = false;
 let score = {
   [X_PLAYER]: 0,
@@ -23,7 +23,11 @@ let score = {
 
 //* functions
 function getInitialBoard() {
-  return [[], [], []].map((row) => [0, 0, 0]);
+  return [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ];
 }
 
 function togglePlayer() {
@@ -42,42 +46,36 @@ function fillCell(target) {
 }
 
 function isSamePlayer(arr) {
-  return (
-    arr.every((val) => val === X_PLAYER) || arr.every((val) => val === O_PLAYER)
-  );
+  return arr.every((val) => val === player);
 }
 
 function checkWin() {
-  // get board columns
-  const getColumns = () => {
-    const columns = [[], [], []];
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        columns[i][j] = gameBoard[j][i];
-      }
+  // check every row and column
+  for (let i = 0; i < 3; i++) {
+    const col = [];
+    const row = [];
+    for (let j = 0; j < 3; j++) {
+      col[j] = gameBoard[j][i];
+      row[j] = gameBoard[i][j];
     }
-    return columns;
-  };
-
-  // get board diameters
-  const getDiameters = () => {
-    const d1 = [gameBoard[0][0], gameBoard[1][1], gameBoard[2][2]];
-    const d2 = [gameBoard[0][2], gameBoard[1][1], gameBoard[2][0]];
-    return [d1, d2];
-  };
-
-  // board directions
-  const columns = getColumns();
-  const diameters = getDiameters();
-  const rows = gameBoard;
-
-  // check all columns, diameters and rows for winner
-  [columns, diameters, rows].forEach((dir) => {
-    dir.forEach((arr) => {
-      if (isSamePlayer(arr)) win = true;
-    });
+    if (isSamePlayer(row)) win = `win-row row-${i}`;
+    else if (isSamePlayer(col)) win = `win-col col-${i}`;
     if (win) return;
-  });
+  }
+
+  // check diameter 1
+  const d0 = [gameBoard[0][0], gameBoard[1][1], gameBoard[2][2]];
+  if (isSamePlayer(d0)) {
+    win = "win-d0";
+    return;
+  }
+
+  // check diameter 2
+  const d1 = [gameBoard[0][2], gameBoard[1][1], gameBoard[2][0]];
+  if (isSamePlayer(d1)) {
+    win = "win-d1";
+    return;
+  }
 }
 
 function checkTie() {
@@ -90,8 +88,9 @@ function restartGame() {
     cell.style.animation = "var(--cell-hide-animation)";
     setTimeout(() => cell.classList.remove(X_PLAYER, O_PLAYER), 90);
   });
+  board.className = "board";
   gameBoard = getInitialBoard();
-  win = false;
+  win = null;
   tie = false;
 }
 
@@ -120,8 +119,10 @@ function updateScore() {
 }
 
 function renderGameStatus() {
-  if (win) notify(`${player} win !`);
-  else if (tie) notify("tie game !");
+  if (win) {
+    board.className += ` ${win}`;
+    notify(`${player} win !`);
+  } else if (tie) notify("tie game !");
   if (win || tie) setTimeout(restartGame, 3500);
 }
 
@@ -131,7 +132,7 @@ function playSoundByStatus() {
   else if (tie) soundSrc = "./sounds/game-over-tie.mp3";
   else if (player === X_PLAYER) soundSrc = "./sounds/note-high.mp3";
   else soundSrc = "./sounds/note-low.mp3";
-  setTimeout(() => new Audio(soundSrc).play(), 70);
+  new Audio(soundSrc).play();
 }
 
 function handleCellClick({ target }) {
