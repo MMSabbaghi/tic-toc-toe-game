@@ -95,46 +95,15 @@ body {
   animation-name: show-diameter-line;
 }
 
-@keyframes show-diameter-line {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 .win-row::before {
   animation-name: show-row-line;
   width: var(--board-size);
-}
-
-@keyframes show-row-line {
-  from {
-    width: 0;
-    opacity: 0;
-  }
-  to {
-    width: 100%;
-    opacity: 1;
-  }
 }
 
 .win-col::before {
   width: var(--line-size);
   height: var(--board-size);
   animation-name: show-col-line;
-}
-
-@keyframes show-col-line {
-  from {
-    height: 0;
-    opacity: 0;
-  }
-  to {
-    height: 100%;
-    opacity: 1;
-  }
 }
 
 .win-d0::before {
@@ -252,14 +221,41 @@ body {
 }
 
 /** animation **/
-@keyframes line-show {
+
+@-webkit-keyframes line-show {
   from {
+    -webkit-transform: scale(0);
     transform: scale(0);
   }
 
   to {
     opacity: 1;
+    -webkit-transform: scale(1);
     transform: scale(1);
+  }
+}
+
+@keyframes line-show {
+  from {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@-webkit-keyframes fadein {
+  from {
+    bottom: 0;
+    opacity: 0;
+  }
+  to {
+    bottom: 30px;
+    opacity: 1;
   }
 }
 
@@ -274,6 +270,17 @@ body {
   }
 }
 
+@-webkit-keyframes fadeout {
+  from {
+    bottom: 30px;
+    opacity: 1;
+  }
+  to {
+    bottom: 0;
+    opacity: 0;
+  }
+}
+
 @keyframes fadeout {
   from {
     bottom: 30px;
@@ -285,24 +292,116 @@ body {
   }
 }
 
-@keyframes cell-show {
+@-webkit-keyframes cell-show {
   from {
     opacity: 0;
+    -webkit-transform: scale(0);
     transform: scale(0);
   }
   to {
     opacity: 1;
+    -webkit-transform: scale(1);
     transform: scale(1);
+  }
+}
+
+@keyframes cell-show {
+  from {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@-webkit-keyframes cell-hide {
+  from {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
   }
 }
 
 @keyframes cell-hide {
   from {
     opacity: 1;
+    -webkit-transform: scale(1);
     transform: scale(1);
   }
   to {
     opacity: 0;
+    -webkit-transform: scale(0);
     transform: scale(0);
+  }
+}
+
+@-webkit-keyframes show-diameter-line {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes show-diameter-line {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes show-row-line {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes show-row-line {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes show-col-line {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes show-col-line {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: 100%;
+    opacity: 1;
   }
 }
