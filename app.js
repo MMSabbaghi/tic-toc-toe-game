@@ -35,11 +35,12 @@ function togglePlayer() {
 }
 
 function isEmptyCell(target) {
-  return !!!target.classList.contains("active");
+  const { row, col } = target.dataset;
+  return gameBoard[row][col] === 0;
 }
 
 function fillCell(target) {
-  target.classList.add("active", player);
+  target.classList.add(player);
   target.style.animation = "var(--cell-show-animation)";
   const { row, col } = target.dataset;
   gameBoard[row][col] = player;
@@ -84,7 +85,6 @@ function checkTie() {
 
 function restartGame() {
   allCells.forEach((cell) => {
-    cell.classList.remove("active");
     cell.style.animation = "var(--cell-hide-animation)";
     setTimeout(() => cell.classList.remove(X_PLAYER, O_PLAYER), 90);
   });
@@ -120,7 +120,7 @@ function updateScore() {
 
 function renderGameStatus() {
   if (win) {
-    board.className += ` ${win}`;
+    board.className = `board ${win}`;
     notify(`${player} win !`);
   } else if (tie) notify("tie game !");
   if (win || tie) setTimeout(restartGame, 3500);
